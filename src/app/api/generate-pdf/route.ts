@@ -291,8 +291,9 @@ export async function POST(req: Request) {
 
         // ── Serialize ─────────────────────────────────────────
         const pdfBytes = await pdfDoc.save();
+        const pdfBuffer = Buffer.from(pdfBytes);
 
-        return new NextResponse(pdfBytes, {
+        return new NextResponse(pdfBuffer, {
             headers: {
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': 'attachment; filename="assignment_front_page.pdf"',
