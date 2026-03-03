@@ -22,6 +22,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({ onDataChange, onGenerat
     department: COLLEGE_CONFIG.department,
     collegeName: COLLEGE_CONFIG.name,
     submissionDate: new Date().toISOString().split('T')[0],
+    assignmentNumber: 'Assignment I',
   });
 
   const [mounted, setMounted] = useState(false);
@@ -73,6 +74,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({ onDataChange, onGenerat
       department: COLLEGE_CONFIG.department,
       collegeName: COLLEGE_CONFIG.name,
       submissionDate: new Date().toISOString().split('T')[0],
+      assignmentNumber: 'Assignment I',
     };
     setFormData(defaultData);
     localStorage.removeItem('assignmentFormData');
@@ -148,6 +150,20 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({ onDataChange, onGenerat
         {/* Course Details */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Course Information</h3>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Assignment Number</label>
+            <select
+              name="assignmentNumber"
+              value={formData.assignmentNumber || 'Assignment I'}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            >
+              {['Assignment I', 'Assignment II', 'Assignment III', 'Assignment IV', 'Assignment V'].map(a => (
+                <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Course Title</label>

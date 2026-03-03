@@ -34,7 +34,7 @@ const AssignmentPreview = forwardRef<HTMLDivElement, AssignmentPreviewProps>(({ 
       >
         {/* Header Section */}
         <div className="w-full flex flex-col items-center mb-8">
-          <h1 className="text-xl font-bold mb-6 tracking-wide">Assignment</h1>
+          <h1 className="text-xl font-bold mb-6 tracking-wide">{data.assignmentNumber || 'Assignment'}</h1>
 
           <h2 className="text-3xl font-bold mb-8 tracking-wide text-gray-900 scale-y-110 transform origin-center">
             {data.collegeName}

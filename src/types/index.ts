@@ -9,6 +9,7 @@ export interface StudentData {
   department: string;
   collegeName: string;
   submissionDate: string;
+  assignmentNumber?: string;
 }
 
 export interface Course {

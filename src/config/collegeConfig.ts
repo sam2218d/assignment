@@ -12,14 +12,18 @@ export const COLLEGE_CONFIG: CollegeConfig = {
 export const DEFAULT_LOGO = "https://ui-avatars.com/api/?name=T+C+E+A&background=ef4444&color=fff&size=256&font-size=0.33&rounded=true&bold=true";
 
 export const COURSES: Course[] = [
-  { title: "Kotlin Programming", code: "PE CS 701/2" },
-  { title: "Compiler Design", code: "PCC-CS-601" },
-  { title: "Computer Networks", code: "PCC-CS-602" },
-  { title: "Operating Systems", code: "PCC-CS-502" },
-  { title: "Database Management Systems", code: "PCC-CS-503" },
-  { title: "Artificial Intelligence", code: "PEC-CS-701" },
-  { title: "Machine Learning", code: "PEC-CS-702" },
-  { title: "Software Engineering", code: "PCC-CS-501" },
+  { title: "Data Structures & Algorithms", code: "CSPC401" },
+  { title: "Introduction to DBMS", code: "CSPC402" },
+  { title: "Computer Networks", code: "CSPC403" },
+  { title: "Software Engineering", code: "CSPC404" },
+  { title: "Data Structures Lab", code: "CSPC405" },
+  { title: "Introduction to DBMS Lab", code: "CSPC406" },
+  { title: "Mobile Application Development", code: "CSPE407" },
+  { title: "Object Oriented Programming Methodology", code: "CSPE407" },
+  { title: "Multimedia Technologies", code: "CSPE407" },
+  { title: "Professional Skill Development", code: "HS408" },
+  { title: "Mini Project", code: "CSPR409" },
+  { title: "Essence of Indian Knowledge and Tradition", code: "AU401" },
 ];
 
 export const PROFESSORS: Professor[] = [

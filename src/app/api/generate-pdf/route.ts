@@ -84,55 +84,30 @@ export async function POST(req: Request) {
         const black = rgb(0, 0, 0);
         const darkGray = rgb(0.1, 0.1, 0.1);
 
-        // ── layout cursor (starts near top, moves downward) ──
-        let y = PAGE_HEIGHT - MARGIN - 14;
+        // ── layout cursor: y starts at top content edge, moves down ──
+        // In pdf-lib, y=0 is bottom of page. We draw baseline at y.
+        let y = PAGE_HEIGHT - MARGIN - 15; // first font baseline (15pt = text-xl)
 
-        // ── 1. "Assignment" label ──────────────────────────────
-        centerText(page, 'Assignment', fontBold, 12, y, darkGray);
-        y -= 28;
+        // ── 1. Assignment label — text-xl font-bold = 15pt, gap mb-6 = 18pt ──
+        const assignmentLabel: string = data.assignmentNumber || 'Assignment';
+        centerText(page, assignmentLabel, fontBold, 15, y, darkGray);
+        y -= (15 + 18); // font + mb-6
 
-        // ── 2. Horizontal rule ────────────────────────────────
-        page.drawLine({
-            start: { x: MARGIN, y },
-            end: { x: PAGE_WIDTH - MARGIN, y },
-            thickness: 0.75,
-            color: darkGray,
-        });
-        y -= 20;
-
-        // ── 3. College name ───────────────────────────────────
+        // ── 2. College name — text-3xl font-bold = 22pt, gap mb-8 = 24pt ──
         const collegeName: string = data.collegeName || COLLEGE_CONFIG.name;
-        y = centerTextWrapped(page, collegeName.toUpperCase(), fontBold, 16, y, 22);
-        y -= 8;
+        y = centerTextWrapped(page, collegeName.toUpperCase(), fontBold, 22, y, 28); // 28 = 22pt + 6pt leading
+        y -= 24; // mb-8
 
-        // ── 4. Course Title ───────────────────────────────────
+        // ── 3. Course info — text-lg = 13pt, space-y-3 = 9pt between, mb-8 = 24pt ──
         const courseTitle: string = data.courseTitle || '';
-        y = centerTextWrapped(
-            page,
-            `Course Title: ${courseTitle}`,
-            fontRegular,
-            11,
-            y,
-            17
-        );
-        y -= 4;
-
-        // ── 5. Course Code ────────────────────────────────────
+        y = centerTextWrapped(page, `Course Title: ${courseTitle}`, fontBold, 13, y, 19);
+        y -= 9; // space-y-3
         const courseCode: string = data.courseCode || '';
-        centerText(page, `Course Code: ${courseCode}`, fontRegular, 11, y, black);
-        y -= 26;
+        centerText(page, `Course Code: ${courseCode}`, fontBold, 13, y, black);
+        y -= (13 + 24); // font + mb-8
 
-        // ── 6. Horizontal rule ────────────────────────────────
-        page.drawLine({
-            start: { x: MARGIN, y },
-            end: { x: PAGE_WIDTH - MARGIN, y },
-            thickness: 0.5,
-            color: rgb(0.5, 0.5, 0.5),
-        });
-        y -= 24;
-
-        // ── 7. Logo image ─────────────────────────────────────
-        const logoSize = 90; // pts (~32mm)
+        // ── 4. Logo — w-32 h-32 = 96pt, mb-8 = 24pt ──
+        const logoSize = 96;
         let logoEmbedded = false;
 
         try {
@@ -164,7 +139,7 @@ export async function POST(req: Request) {
                     width: logoDims.width,
                     height: logoDims.height,
                 });
-                y = logoY - 18;
+                y = logoY - 24; // mb-8
                 logoEmbedded = true;
             }
         } catch {
@@ -172,122 +147,88 @@ export async function POST(req: Request) {
         }
 
         if (!logoEmbedded) {
-            // Draw a placeholder circle if logo couldn't be loaded
             const cx = PAGE_WIDTH / 2;
             const cy = y - logoSize / 2;
             page.drawCircle({ x: cx, y: cy, size: logoSize / 2, borderColor: darkGray, borderWidth: 1 });
             centerText(page, 'LOGO', fontRegular, 10, cy - 4, darkGray);
-            y = cy - logoSize / 2 - 18;
+            y = cy - logoSize / 2 - 24; // mb-8
         }
 
-        // ── 8. Address ────────────────────────────────────────
+        // ── 5. Address — text-lg font-bold uppercase = 13pt, mb-12 = 36pt ──
         const address: string = data.address || COLLEGE_CONFIG.address;
-        y = centerTextWrapped(
-            page,
-            address.toUpperCase(),
-            fontBold,
-            10,
-            y,
-            15
-        );
-        y -= 26;
+        y = centerTextWrapped(page, address.toUpperCase(), fontBold, 13, y, 19);
+        y -= 36; // mb-12
 
-        // ── 9. Divider ────────────────────────────────────────
-        page.drawLine({
-            start: { x: MARGIN, y },
-            end: { x: PAGE_WIDTH - MARGIN, y },
-            thickness: 0.5,
-            color: rgb(0.5, 0.5, 0.5),
-        });
-        y -= 24;
-
-        // ── 10. Submitted To ──────────────────────────────────
-        centerText(page, 'Submitted to', fontBold, 12, y, black);
-        // Underline
+        // ── 6. Submitted to — text-lg font-bold = 13pt + underline, mb-2 = 6pt ──
         const toLabel = 'Submitted to';
-        const toLabelW = fontBold.widthOfTextAtSize(toLabel, 12);
-        const toLabelX = (PAGE_WIDTH - toLabelW) / 2;
+        centerText(page, toLabel, fontBold, 13, y, black);
+        const toLabelW = fontBold.widthOfTextAtSize(toLabel, 13);
         page.drawLine({
-            start: { x: toLabelX, y: y - 1 },
-            end: { x: toLabelX + toLabelW, y: y - 1 },
-            thickness: 0.75,
+            start: { x: (PAGE_WIDTH - toLabelW) / 2, y: y - 1.5 },
+            end: { x: (PAGE_WIDTH + toLabelW) / 2, y: y - 1.5 },
+            thickness: 0.6,
             color: black,
         });
-        y -= 18;
+        y -= (13 + 6); // font + mb-2
 
         const professorName: string = data.professorName || '';
-        centerText(page, professorName, fontBold, 11, y, black);
-        y -= 16;
+        centerText(page, professorName, fontBold, 13, y, black);
+        y -= (13 + 2); // font + small gap
 
         const professorDesignation: string = data.professorDesignation || 'Assistant Professor';
-        centerText(page, professorDesignation, fontItalic, 11, y, darkGray);
-        y -= 16;
+        centerText(page, professorDesignation, fontItalic, 12, y, darkGray);
+        y -= (12 + 12); // font + mb-4
 
         const department: string = data.department || COLLEGE_CONFIG.department;
-        y = centerTextWrapped(page, department, fontBold, 11, y, 16);
-        y = centerTextWrapped(page, collegeName, fontBold, 11, y, 16);
-        y -= 28;
+        // space-y-1 = 3pt between lines
+        y = centerTextWrapped(page, department, fontBold, 12, y, 15);
+        y = centerTextWrapped(page, collegeName, fontBold, 12, y, 15);
+        y -= 36; // mb-12
 
-        // ── 11. Divider ───────────────────────────────────────
-        page.drawLine({
-            start: { x: MARGIN, y },
-            end: { x: PAGE_WIDTH - MARGIN, y },
-            thickness: 0.5,
-            color: rgb(0.5, 0.5, 0.5),
-        });
-        y -= 24;
-
-        // ── 12. Submitted By ──────────────────────────────────
-        centerText(page, 'Submitted by', fontBold, 12, y, black);
-        // Underline
+        // ── 7. Submitted by — text-lg font-bold = 13pt + underline, mb-2 = 6pt ──
         const byLabel = 'Submitted by';
-        const byLabelW = fontBold.widthOfTextAtSize(byLabel, 12);
-        const byLabelX = (PAGE_WIDTH - byLabelW) / 2;
+        centerText(page, byLabel, fontBold, 13, y, black);
+        const byLabelW = fontBold.widthOfTextAtSize(byLabel, 13);
         page.drawLine({
-            start: { x: byLabelX, y: y - 1 },
-            end: { x: byLabelX + byLabelW, y: y - 1 },
-            thickness: 0.75,
+            start: { x: (PAGE_WIDTH - byLabelW) / 2, y: y - 1.5 },
+            end: { x: (PAGE_WIDTH + byLabelW) / 2, y: y - 1.5 },
+            thickness: 0.6,
             color: black,
         });
-        y -= 18;
+        y -= (13 + 6); // font + mb-2
 
         const studentName: string = data.studentName || '';
-        centerText(page, studentName, fontBold, 12, y, black);
-        y -= 20;
+        centerText(page, studentName, fontBold, 13, y, black);
+        y -= (13 + 6); // font + mb-2
 
+        // space-y-1 = 3pt between detail lines
         const studentId: string = data.studentId || '';
-        centerText(page, `Student ID.: ${studentId}`, fontRegular, 11, y, black);
-        y -= 16;
+        centerText(page, `Student ID.: ${studentId}`, fontRegular, 12, y, black);
+        y -= (12 + 3);
 
         const tuRollNo: string = data.tuRollNo || '';
-        centerText(page, `TU Roll No.: ${tuRollNo}`, fontRegular, 11, y, black);
-        y -= 16;
+        centerText(page, `TU Roll No.: ${tuRollNo}`, fontRegular, 12, y, black);
+        y -= (12 + 3);
 
         const semester: string = data.semester || '';
-        centerText(page, `Semester: ${semester}`, fontRegular, 11, y, black);
-        y -= 20;
+        centerText(page, `Semester: ${semester}`, fontRegular, 12, y, black);
+        y -= (12 + 12); // font + mb-4
 
-        y = centerTextWrapped(page, department, fontBold, 11, y, 16);
-        y = centerTextWrapped(page, collegeName, fontBold, 11, y, 16);
+        y = centerTextWrapped(page, department, fontBold, 12, y, 15);
+        y = centerTextWrapped(page, collegeName, fontBold, 12, y, 15);
 
-        // ── 13. Date of Submission (pinned toward bottom) ─────
-        const dateY = MARGIN + 36;
-        page.drawLine({
-            start: { x: MARGIN, y: dateY + 20 },
-            end: { x: PAGE_WIDTH - MARGIN, y: dateY + 20 },
-            thickness: 0.5,
-            color: rgb(0.5, 0.5, 0.5),
-        });
-
+        // ── 8. Date — text-lg font-bold = 13pt, pinned to bottom (mt-auto) ──
+        const dateY = MARGIN + 20;
         const submissionDate: string = formatDate(data.submissionDate);
         centerText(
             page,
             `Date of Submission - ${submissionDate}`,
             fontBold,
-            11,
+            13,
             dateY,
             black
         );
+
 
         // ── Serialize ─────────────────────────────────────────
         const pdfBytes = await pdfDoc.save();
