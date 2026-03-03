@@ -63,13 +63,6 @@ export default function Home() {
             <header className="bg-white border-b border-gray-200 sticky top-0 z-10 no-print">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="p-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 shadow-md">
-                            <img
-                                src="/user_photo.png"
-                                alt="User Photo"
-                                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-white"
-                            />
-                        </div>
                         <h1 className="text-base sm:text-xl font-bold text-gray-900 hidden sm:block">
                             Assignment Front Page Generator
                         </h1>
