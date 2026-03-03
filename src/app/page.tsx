@@ -61,20 +61,20 @@ export default function Home() {
         <>
             {/* Header */}
             <header className="bg-white border-b border-gray-200 sticky top-0 z-10 no-print">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="p-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 shadow-md">
                             <img
                                 src="/user_photo.png"
                                 alt="User Photo"
-                                className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-white"
                             />
                         </div>
-                        <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
+                        <h1 className="text-base sm:text-xl font-bold text-gray-900 hidden sm:block">
                             Assignment Front Page Generator
                         </h1>
-                        <h1 className="text-xl font-bold text-gray-900 sm:hidden">
-                            Front Page Gen
+                        <h1 className="text-sm font-bold text-gray-900 sm:hidden">
+                            Front Page Generator
                         </h1>
                     </div>
                     <div className="flex items-center gap-4">
@@ -84,19 +84,19 @@ export default function Home() {
                             rel="noopener noreferrer"
                             className="text-gray-500 hover:text-gray-700 transition-colors"
                         >
-                            <Github className="w-6 h-6" />
+                            <Github className="w-5 h-5 sm:w-6 sm:h-6" />
                         </a>
                     </div>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-                <div className="flex flex-col lg:flex-row gap-8">
+            <main className="flex-grow max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full">
+                <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
 
                     {/* Left Column: Form */}
                     <div className="w-full lg:w-1/3 xl:w-1/4 no-print">
-                        <div className="sticky top-24">
+                        <div className="lg:sticky lg:top-24">
                             <AssignmentForm
                                 onDataChange={handleDataChange}
                                 onGenerate={handleGeneratePDF}
@@ -104,15 +104,15 @@ export default function Home() {
                                 onReset={handleReset}
                             />
 
-                            <div className="mt-6 bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-800">
+                            <div className="mt-4 bg-blue-50 border border-blue-100 rounded-lg p-3 text-sm text-blue-800">
                                 <p className="font-semibold mb-1">Tip:</p>
-                                <p>Fill in the details and click "Download PDF" to get your print-ready front page. The preview updates automatically.</p>
+                                <p>Fill in the details and click "Download PDF" to get your print-ready front page.</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Right Column: Preview */}
-                    <div className="w-full lg:w-2/3 xl:w-3/4 flex justify-center">
+                    <div className="w-full lg:w-2/3 xl:w-3/4">
                         <div className="print-content">
                             <AssignmentPreview
                                 ref={previewRef}

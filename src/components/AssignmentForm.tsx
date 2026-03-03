@@ -225,24 +225,24 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({ onDataChange, onGenerat
 
 
 
-      <div className="mt-8 flex flex-wrap gap-4 justify-end">
+      <div className="mt-8 flex flex-col sm:flex-row flex-wrap gap-3 sm:justify-end">
         <button
           onClick={handleReset}
-          className="flex items-center gap-2 px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors w-full sm:w-auto"
         >
           <RotateCcw className="w-4 h-4" />
           Reset
         </button>
         <button
           onClick={onPrint}
-          className="flex items-center gap-2 px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors w-full sm:w-auto"
         >
           <Printer className="w-4 h-4" />
           Print
         </button>
         <button
           onClick={onGenerate}
-          className="flex items-center gap-2 px-4 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors w-full sm:w-auto"
         >
           <Download className="w-4 h-4" />
           Download PDF
