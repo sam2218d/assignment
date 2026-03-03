@@ -29,13 +29,16 @@ export async function POST(req: Request) {
             });
         } else {
             // Vercel setup
-            await chromium.font('https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf');
+            // Workaround for @sparticuz/chromium type errors
+            const chrom: any = chromium;
+
+            await chrom.font('https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf');
 
             browser = await puppeteer.launch({
-                args: chromium.args,
-                defaultViewport: chromium.defaultViewport,
-                executablePath: await chromium.executablePath(),
-                headless: chromium.headless,
+                args: chrom.args,
+                defaultViewport: chrom.defaultViewport,
+                executablePath: await chrom.executablePath(),
+                headless: chrom.headless,
             });
         }
 
