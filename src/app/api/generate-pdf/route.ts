@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+import chromium from '@sparticuz/chromium-min';
 import fs from 'fs';
 import path from 'path';
 import { COLLEGE_CONFIG } from '../../../config/collegeConfig';
@@ -37,7 +37,9 @@ export async function POST(req: Request) {
             browser = await puppeteer.launch({
                 args: chrom.args,
                 defaultViewport: chrom.defaultViewport,
-                executablePath: await chrom.executablePath(),
+                executablePath: await chrom.executablePath(
+                    `https://github.com/Sparticuz/chromium/releases/download/v133.0.0/chromium-v133.0.0-pack.tar`
+                ),
                 headless: chrom.headless,
             });
         }
@@ -70,29 +72,32 @@ export async function POST(req: Request) {
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
-            body { 
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
                 font-family: 'Times New Roman', Times, serif; 
                 background: white; 
-                margin: 0; 
-                padding: 0;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             .a4-container {
                 width: 210mm;
-                height: 297mm;  /* Strict height to prevent spilling to next page */
-                padding: 15mm;   /* Slightly reduced padding to give more internal space */
+                height: 297mm;
+                padding: 15mm;
                 box-sizing: border-box;
-                margin: 0 auto;
+                margin: 0;
                 text-align: center;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                overflow: hidden; /* Hide overflow to prevent 2nd page generation */
+                overflow: hidden;
             }
         </style>
     </head>
-    <body>
+    <body class="m-0 p-0 overflow-hidden">
         <div class="a4-container">
             <!-- Header Section -->
             <div class="w-full flex-col flex items-center mb-6">
