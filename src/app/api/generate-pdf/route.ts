@@ -51,16 +51,11 @@ export async function POST(req: Request) {
             return `${day}-${month}-${year}`;
         };
 
+        const origin = new URL(req.url).origin;
         let logoSrc = data.logoUrl || COLLEGE_CONFIG.logoUrl;
+
         if (logoSrc === '/logo.png') {
-            try {
-                const logoPath = path.join(process.cwd(), 'public', 'logo.png');
-                const logoBuffer = fs.readFileSync(logoPath);
-                logoSrc = `data:image/png;base64,${logoBuffer.toString('base64')}`;
-            } catch (error) {
-                console.error('Failed to load local logo:', error);
-                logoSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
-            }
+            logoSrc = `${origin}/logo.png`;
         } else if (!logoSrc) {
             logoSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
         }
@@ -177,7 +172,7 @@ export async function POST(req: Request) {
     </html>
     `;
 
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+        await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
 
         const pdfBuffer = await page.pdf({
             format: 'A4',
