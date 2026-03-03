@@ -1,45 +1,40 @@
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { StudentData } from '../types';
 
-export const generatePDF = async (element: HTMLElement, fileName: string = 'assignment_front_page.pdf') => {
-  if (!element) return;
-
+export const generatePDF = async (data: StudentData, fileName: string = 'assignment_front_page.pdf') => {
   try {
-    const canvas = await html2canvas(element, {
-      scale: 2, // Increase scale for better quality
-      useCORS: true, // Enable CORS for images
-      logging: false,
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight
+    const response = await fetch('/api/generate-pdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
     });
 
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    });
-
-    const imgWidth = 210; // A4 width in mm
-    const pageHeight = 297; // A4 height in mm
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft >= 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+    if (!response.ok) {
+      throw new Error(`Failed to generate PDF: ${response.statusText}`);
     }
 
-    pdf.save(fileName);
+    // Get the blob from the response
+    const blob = await response.blob();
+
+    // Create a URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a temporary link element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+
+    // Append link to body, click it, and remove it
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clean up the URL object
+    window.URL.revokeObjectURL(url);
+
   } catch (error) {
     console.error('Error generating PDF:', error);
-    alert('Failed to generate PDF. Please try again.');
+    alert('Failed to generate PDF server-side. Please try again.');
   }
 };

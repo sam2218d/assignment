@@ -11,30 +11,44 @@ interface AssignmentFormProps {
 }
 
 const AssignmentForm: React.FC<AssignmentFormProps> = ({ onDataChange, onGenerate, onPrint, onReset }) => {
-  const [formData, setFormData] = useState<StudentData>(() => {
-    const savedData = localStorage.getItem('assignmentFormData');
-    return savedData ? JSON.parse(savedData) : {
-      studentName: '',
-      studentId: '',
-      tuRollNo: '',
-      semester: '7th',
-      courseTitle: COURSES[0].title,
-      courseCode: COURSES[0].code,
-      professorName: PROFESSORS[0].name,
-      department: COLLEGE_CONFIG.department,
-      collegeName: COLLEGE_CONFIG.name,
-      submissionDate: new Date().toISOString().split('T')[0],
-    };
+  const [formData, setFormData] = useState<StudentData>({
+    studentName: '',
+    studentId: '',
+    tuRollNo: '',
+    semester: '7th',
+    courseTitle: COURSES[0].title,
+    courseCode: COURSES[0].code,
+    professorName: PROFESSORS[0].name,
+    department: COLLEGE_CONFIG.department,
+    collegeName: COLLEGE_CONFIG.name,
+    submissionDate: new Date().toISOString().split('T')[0],
   });
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    localStorage.setItem('assignmentFormData', JSON.stringify(formData));
+    setMounted(true);
+    const savedData = localStorage.getItem('assignmentFormData');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setFormData(parsed);
+      } catch (e) {
+        console.error('Error parsing saved form data', e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('assignmentFormData', JSON.stringify(formData));
+    }
     onDataChange(formData);
-  }, [formData, onDataChange]);
+  }, [formData, onDataChange, mounted]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
+
     if (name === 'courseTitle') {
       const selectedCourse = COURSES.find(c => c.title === value);
       setFormData(prev => ({
@@ -76,7 +90,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({ onDataChange, onGenerat
         {/* Student Details */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Student Information</h3>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
             <div className="relative">
@@ -193,35 +207,7 @@ const AssignmentForm: React.FC<AssignmentFormProps> = ({ onDataChange, onGenerat
         </div>
       </div>
 
-      {/* College Details (Collapsible or just separate section) */}
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-          <Building className="w-5 h-5 text-gray-500" />
-          Institution Details
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
-            <input
-              type="text"
-              name="collegeName"
-              value={formData.collegeName}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-            <input
-              type="text"
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-            />
-          </div>
-        </div>
-      </div>
+
 
       <div className="mt-8 flex flex-wrap gap-4 justify-end">
         <button
